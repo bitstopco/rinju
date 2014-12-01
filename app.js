@@ -1,5 +1,9 @@
 var fs = require('fs');
 
+function runIt(seconds) {
+	setTimeout(runFaucet, seconds * 1000);
+}
+
 function runFaucet() {
 
 	// check if we have an image to work with
@@ -16,20 +20,21 @@ function runFaucet() {
 			var image = new Image();
 			image.onload = function(){
 			  var result;
-			  try{
+			  try {
 			    result = qrcode.decode(image);
 			    console.log('result of qr code: ' + result);
-			  }catch(e){
+			  } catch(e) {
 			    console.log('unable to read qr code');
+			    runIt('2');
 			  }
 			}
 			image.src = filename;
-			
+
   	} else {
   		// no image so check again
     	console.log('No image');
 
-    	setTimeout(runFaucet, 2 * 1000);
+    	runIt('2');
   	}
 	});
 
