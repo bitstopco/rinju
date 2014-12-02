@@ -6,7 +6,8 @@ var camera = new RaspiCam({
   mode: "photo",
   output: "image.jpg",
   encoding: "jpg",
-  timeout: 0 // take the picture immediately
+  timeout: 0, // take the picture immediately
+  nopreview:
 });
 
 camera.on("started", function( err, timestamp ){
