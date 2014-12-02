@@ -3,22 +3,57 @@ var RaspiCam = require("raspicam");
 
 var camera = new RaspiCam({
   mode: "photo",
-  output: "image.jpg",
-  encoding: "jpg",
+  output: "qrcode.png",
+  encoding: "png",
   timeout: 1, // take the picture immediately
   nopreview: true
 });
 
-camera.on("started", function( err, timestamp ){
-  console.log("photo started at " + timestamp );
-});
+function runIt(seconds) {
+  camera.start();
+  
+  setTimeout(runFaucet, seconds * 1000);
+}
 
-camera.on("read", function( err, timestamp, filename ){
-  console.log("photo image captured with filename: " + filename );
-});
+function runFaucet() {
 
-camera.on("exit", function( timestamp ){
-  console.log("photo child process has exited at " + timestamp );
-});
+  // check if we have an image to work with
+  fs.exists(__dirname + '/qrcode.png', function(exists) {
+    if (exists) {
+      // we do so now check if its a valid qr code
+      console.log('We have image');
 
-camera.start();
+      // process this baby
+      var Canvas = require('canvas'), Image = Canvas.Image, qrcode = require('jsqrcode')(Canvas);
+
+      var filename = __dirname + '/qrcode.png';
+
+      var image = new Image();
+      image.onload = function(){
+        var result;
+        try {
+          result = qrcode.decode(image);
+          console.log('result of qr code: ' + result);
+        } catch(e) {
+          console.log('unable to read qr code');
+          runIt('2');
+        }
+      }
+      image.src = filename;
+
+      fs.unlink(filename, function (err) {
+        if (err) throw err;
+        console.log('successfully deleted qrcode');
+      });
+
+    } else {
+      // no image so check again
+      console.log('No image');
+
+      runIt('2');
+    }
+  });
+
+}
+
+runFaucet();
