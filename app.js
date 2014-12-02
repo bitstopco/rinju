@@ -2,52 +2,47 @@ var fs = require('fs');
 var RaspiCam = require("raspicam");
 
 var camera = new RaspiCam({
-  mode: "timelapse",
+  mode: "photo",
   output: "./codes/image_%06d.jpg",
   encoding: "jpg",
-  timelapse: 2000,
-  timeout: 12000,
+  timeout: 1,
   nopreview: true
 });
 
-camera.on("start", function( err, timestamp ){
-  console.log("timelapse started at " + timestamp);
-});
+function runIt(seconds) {
+  setTimeout(runFaucet, seconds * 1000);
+}
 
-camera.on("read", function( err, timestamp, imagename ){
-  console.log("timelapse image captured with filename: " + imagename);
+function runFaucet()  {
+  camera.on("started", function( err, timestamp ){
+    console.log("Taken");
+  });
 
-  // process this baby
-  var Canvas = require('canvas'), Image = Canvas.Image, qrcode = require('jsqrcode')(Canvas);
+  camera.on("read", function( err, timestamp, imagename ){
+    console.log("Process" + imagename );
 
-  var filename = __dirname + '/codes/' + imagename;
-  console.log(filename);
+    var filename = __dirname + '/codes/' + imagename;
+    console.log(filename);
 
-  var image = new Image();
-  image.onload = function(){
-    var result;
-    try {
-      result = qrcode.decode(image);
-      console.log('result of qr code: ' + result);
-    } catch(e) {
-      console.log('unable to read qr code');
-      console.log(e);
+    var image = new Image();
+    image.onload = function(){
+      var result;
+      try {
+        result = qrcode.decode(image);
+        console.log(result);
+      } catch(e) {
+        console.log(e);
+      }
     }
-  }
-  image.src = filename;
+    image.src = filename;
 
-});
+  });
 
-camera.on("exit", function( timestamp ){
-  console.log("timelapse child process has exited");
-});
+  camera.on("exit", function( timestamp ){
+    console.log("Done");
+  });
 
-camera.on("stop", function( err, timestamp ){
-  console.log("timelapse child process has been stopped at " + timestamp);
-});
+  camera.start();
+}
 
-camera.start();
-
-setTimeout(function(){
-  camera.stop();
-}, 9000);
+runFaucet();
