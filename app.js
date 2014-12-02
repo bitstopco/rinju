@@ -3,7 +3,7 @@ var Camera = require("camerapi");
 
 var cam = new Camera();
 
-cam.baseFolder('/codes');
+cam.baseFolder(__dirname + '/codes');
 
 cam.prepare({"timeout" : 150, 
          "width" : 2592,
