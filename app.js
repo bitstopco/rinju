@@ -5,7 +5,7 @@ var camera = new RaspiCam({
   mode: "photo",
   output: "qrcode.png",
   encoding: "png",
-  timeout: 1
+  timeout: 2
 });
 
 
@@ -29,7 +29,6 @@ var camera = new RaspiCam({
         console.log('result of qr code: ' + result);
       } catch(e) {
         console.log('unable to read qr code');
-        runIt('2');
       }
     }
     image.src = filename;
