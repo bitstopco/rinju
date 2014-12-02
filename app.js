@@ -21,6 +21,9 @@ function runFaucet()  {
   camera.on("read", function( err, timestamp, imagename ){
     console.log("Process" + imagename );
 
+    // process this baby
+    var Canvas = require('canvas'), Image = Canvas.Image, qrcode = require('jsqrcode')(Canvas);
+
     var filename = __dirname + '/codes/' + imagename;
     console.log(filename);
 
