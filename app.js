@@ -21,6 +21,7 @@ camera.on("read", function( err, timestamp, imagename ){
   var Canvas = require('canvas'), Image = Canvas.Image, qrcode = require('jsqrcode')(Canvas);
 
   var filename = __dirname + '/codes/' + imagename;
+  console.log(filename);
 
   var image = new Image();
   image.onload = function(){
@@ -30,6 +31,7 @@ camera.on("read", function( err, timestamp, imagename ){
       console.log('result of qr code: ' + result);
     } catch(e) {
       console.log('unable to read qr code');
+      console.log(e);
     }
   }
   image.src = filename;
