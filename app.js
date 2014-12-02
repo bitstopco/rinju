@@ -5,7 +5,7 @@ var camera = new RaspiCam({
   mode: "photo",
   output: "./codes/image_%06d.jpg",
   encoding: "jpg",
-  timeout: 1,
+  timeout: 2,
   nopreview: true
 });
 
@@ -14,10 +14,7 @@ function runIt(seconds) {
 }
 
 function runFaucet()  {
-  camera.on("started", function( err, timestamp ){
-    console.log("Taken");
-  });
-
+ 
   camera.on("read", function( err, timestamp, imagename ){
     console.log("Process" + imagename );
 
@@ -33,16 +30,16 @@ function runFaucet()  {
       try {
         result = qrcode.decode(image);
         console.log(result);
+
+        runIt('2');
       } catch(e) {
         console.log(e);
+
+        runIt('2');
       }
     }
     image.src = filename;
 
-  });
-
-  camera.on("exit", function( timestamp ){
-    console.log("Done");
   });
 
   camera.start();
