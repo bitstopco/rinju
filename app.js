@@ -1,48 +1,46 @@
 var fs = require('fs');
-var RaspiCam = require("raspicam");
-
-var camera = new RaspiCam({
-  mode: "photo",
-  output: "./codes/image_%06d.jpg",
-  encoding: "jpg",
-  timeout: 2,
-  nopreview: true
-});
+var Camelittle = require('camelittle');
+var clInstance = new Camelittle({});
+var Canvas = require('canvas'), Image = Canvas.Image, qrcode = require('jsqrcode')(Canvas);
 
 function runIt(seconds) {
   setTimeout(runFaucet, seconds * 1000);
 }
 
 function runFaucet()  {
- 
-  camera.on("read", function( err, timestamp, imagename ){
-    console.log("Process" + imagename );
+  console.log('Hi')
 
-    // process this baby
-    var Canvas = require('canvas'), Image = Canvas.Image, qrcode = require('jsqrcode')(Canvas);
+  clInstance.grab(function(err, image){
+    console.log('Taken');
 
-    var filename = __dirname + '/codes/' + imagename;
-    console.log(filename);
+    fs.writeFileSync('codes/code.jpg', image, 'binary');
 
-    var image = new Image();
+    var filename = __dirname + '/codes/code.jpg'
+
+    var image = new Image()
     image.onload = function(){
-      var result;
-      try {
-        result = qrcode.decode(image);
-        console.log(result);
+    var result;
+      try{
+        result = qrcode.decode(image)
+        var address = result.replace('bitcoin:','');
+        console.log(address);
 
-        runIt('2');
+        fs.unlink(filename, function (err) {
+          if (err) {
+            console.log('Error deleting code');
+          }
+        });
+
+        runIt('6'); // if we got an address then wait 6 seconds
+
       } catch(e) {
         console.log(e);
-
-        runIt('2');
+        runIt('3');
       }
     }
-    image.src = filename;
+    image.src = filename
 
   });
-
-  camera.start();
 }
 
 runFaucet();
