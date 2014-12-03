@@ -39,7 +39,11 @@
       // the result and then prepares the
       // videoElement to send its source to the
       // decoder.
-      qr.decodeFromCamera(video, resultHandler);
+      scan();
+      
+      function scan() {
+        qr.decodeFromCamera(video, resultHandler);
+      }
       // attach some event handlers to reset and
       // stop whenever we want.
 
