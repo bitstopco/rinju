@@ -31,6 +31,14 @@
         } else {
           var address = result.replace('bitcoin:','');
           console.log(address);
+
+          if (localStorage.getItem("lastAddress") == address) {
+            console.log('Same address');
+          } else {
+            console.log('New address');
+          }
+
+          localStorage.setItem("lastAddress", address);
         }
       }
 
@@ -39,11 +47,7 @@
       // the result and then prepares the
       // videoElement to send its source to the
       // decoder.
-      scan();
-      
-      function scan() {
-        qr.decodeFromCamera(video, resultHandler);
-      }
+      qr.decodeFromCamera(video, resultHandler);
       // attach some event handlers to reset and
       // stop whenever we want.
 
