@@ -22,16 +22,17 @@ function runFaucet()  {
     var result;
       try{
         result = qrcode.decode(image)
-        console.log(result);
+        var address = result.replace('bitcoin:','');
+        console.log(address);
+        runIt('3');
       } catch(e) {
         console.log(e);
+        runIt('3');
       }
     }
     image.src = filename
 
   });
-
-  runIt('3');
 }
 
 runFaucet();
