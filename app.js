@@ -17,7 +17,7 @@ function runFaucet()  {
 
   console.log('Taken');
 
-  var cmd = 'fswebcam -r 1280x720 codes/code.jpg -s brightness=0% --jpeg 100 -S 2';
+  var cmd = 'fswebcam -d /dev/video0 -r 640x480 codes/code.jpg --jpeg 85 -S 2';
   exec(cmd, {encoding: 'binary', maxBuffer: 5000*1024});
 
   var filename = __dirname + '/codes/code.jpg'
