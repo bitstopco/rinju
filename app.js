@@ -13,7 +13,12 @@ function runIt(seconds) {
 }
 
 function runFaucet()  {
-  console.log('Hi')
+  
+  needle.get('http://bitcoinfaucetarduino.local/arduino/makeittrickle/2', function(error, response) {
+    if (!error && response.statusCode == 200) {
+    
+    }
+  });
 
   clInstance.grab(function(err, image){
     console.log('Taken');
@@ -34,6 +39,11 @@ function runFaucet()  {
           if (!error && response.statusCode == 200) {
             console.log(response.body);
             console.log(response.body.message);
+            needle.get('http://bitcoinfaucetarduino.local/arduino/makeitrain/2', function(error, response) {
+              if (!error && response.statusCode == 200) {
+    
+              } 
+            });
           } else {
             console.log('error');
             console.lof(error);            
