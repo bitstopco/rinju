@@ -3,9 +3,9 @@ var needle = require('needle');
 var nconf = require('nconf');
 var Camelittle = require('camelittle');
 var clInstance = new Camelittle({
-    device: '/dev/video0',
-    resolution: '420x630',
-    'no-banner': null
+  device: '/dev/video0',
+  resolution: '1920x1080',
+  'no-banner': null
 });
 var Canvas = require('canvas'), Image = Canvas.Image, qrcode = require('jsqrcode')(Canvas);
 
