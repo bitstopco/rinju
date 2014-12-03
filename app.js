@@ -1,7 +1,12 @@
 var fs = require('fs');
+var needle = require('needle');
+var nconf = require('nconf');
 var Camelittle = require('camelittle');
 var clInstance = new Camelittle({});
 var Canvas = require('canvas'), Image = Canvas.Image, qrcode = require('jsqrcode')(Canvas);
+
+nconf.argv().env();
+nconf.file({ file: 'config.json' });
 
 function runIt(seconds) {
   setTimeout(runFaucet, seconds * 1000);
@@ -24,6 +29,16 @@ function runFaucet()  {
         result = qrcode.decode(image)
         var address = result.replace('bitcoin:','');
         console.log(address);
+
+        needle.get('https://blockchain.info/merchant/'+nconf.get('blockchain:guid')+'/payment?password='+nconf.get('blockchain:password')+'&second_password='+nconf.get('blockchain:secondpassword')+'&to='+address+'&amount='+nconf.get('blockchain:transaction:amount')+'&from='+nconf.get('blockchain:transaction:from')+'&note='+nconf.get('blockchain:transaction:note'), function(error, response) {
+          if (!error && response.statusCode == 200) {
+            console.log(response.body);
+            console.log(response.body.message);
+          } else {
+            console.log('error');
+            console.lof(error);            
+          }
+        });
 
         fs.unlink(filename, function (err) {
           if (err) {
