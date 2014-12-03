@@ -24,7 +24,15 @@ function runFaucet()  {
         result = qrcode.decode(image)
         var address = result.replace('bitcoin:','');
         console.log(address);
-        runIt('3');
+
+        fs.unlink(filename, function (err) {
+          if (err) {
+            console.log('Error deleting code');
+          }
+        });
+
+        runIt('6'); // if we got an address then wait 6 seconds
+
       } catch(e) {
         console.log(e);
         runIt('3');
