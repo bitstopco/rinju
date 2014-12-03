@@ -1,0 +1,12 @@
+{
+  "blockchain": {
+    "guid": "",
+    "password": "",
+    "secondpassword": "",
+    "transaction": {
+      "amount": "26000",
+      "from": "",
+      "note": "Make it rain"
+    }
+  }
+}
