@@ -36,7 +36,7 @@ function runFaucet()  {
           console.log(response.body.message);
         } else {
           console.log('error');
-          console.lof(error);            
+          console.log(error);            
         }
       });
 
