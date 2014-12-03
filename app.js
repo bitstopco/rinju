@@ -1,13 +1,8 @@
+var exec = require('child_process').exec;
+var util = require('util');
 var fs = require('fs');
 var needle = require('needle');
 var nconf = require('nconf');
-var Camelittle = require('camelittle');
-var clInstance = new Camelittle({
-  device: '/dev/video0',
-  resolution: '1280x720',
-  s: '2',
-  'no-banner': null
-});
 var Canvas = require('canvas'), Image = Canvas.Image, qrcode = require('jsqrcode')(Canvas);
 
 nconf.argv().env();
@@ -20,47 +15,46 @@ function runIt(seconds) {
 function runFaucet()  {
   console.log('Hi')
 
-  clInstance.grab(function(err, image){
-    console.log('Taken');
+  console.log('Taken');
 
-    fs.writeFileSync('codes/code.jpg', image, 'binary');
+  var cmd = 'fswebcam -r 1280x720 codes/code.jpg -S 2 --jpeg';
+  exec(cmd, {encoding: 'binary', maxBuffer: 5000*1024});
 
-    var filename = __dirname + '/codes/code.jpg'
+  var filename = __dirname + '/codes/code.jpg'
 
-    var image = new Image()
-    image.onload = function(){
-    var result;
-      try{
-        result = qrcode.decode(image)
-        var address = result.replace('bitcoin:','');
-        console.log(address);
+  var image = new Image()
+  image.onload = function(){
+  var result;
+    try{
+      result = qrcode.decode(image)
+      var address = result.replace('bitcoin:','');
+      console.log(address);
 
-        needle.get('https://blockchain.info/merchant/'+nconf.get('blockchain:guid')+'/payment?password='+nconf.get('blockchain:password')+'&second_password='+nconf.get('blockchain:secondpassword')+'&to='+address+'&amount='+nconf.get('blockchain:transaction:amount')+'&from='+nconf.get('blockchain:transaction:from')+'&note='+nconf.get('blockchain:transaction:note'), function(error, response) {
-          if (!error && response.statusCode == 200) {
-            console.log(response.body);
-            console.log(response.body.message);
-          } else {
-            console.log('error');
-            console.lof(error);            
-          }
-        });
+      needle.get('https://blockchain.info/merchant/'+nconf.get('blockchain:guid')+'/payment?password='+nconf.get('blockchain:password')+'&second_password='+nconf.get('blockchain:secondpassword')+'&to='+address+'&amount='+nconf.get('blockchain:transaction:amount')+'&from='+nconf.get('blockchain:transaction:from')+'&note='+nconf.get('blockchain:transaction:note'), function(error, response) {
+        if (!error && response.statusCode == 200) {
+          console.log(response.body);
+          console.log(response.body.message);
+        } else {
+          console.log('error');
+          console.lof(error);            
+        }
+      });
 
-        fs.unlink(filename, function (err) {
-          if (err) {
-            console.log('Error deleting code');
-          }
-        });
+      fs.unlink(filename, function (err) {
+        if (err) {
+          console.log('Error deleting code');
+        }
+      });
 
-        runIt('6'); // if we got an address then wait 6 seconds
+      runIt('6'); // if we got an address then wait 6 seconds
 
-      } catch(e) {
-        console.log(e);
-        runIt('3');
-      }
+    } catch(e) {
+      console.log(e);
+      runIt('3');
     }
-    image.src = filename
+  }
+  image.src = filename
 
-  });
 }
 
 runFaucet();
