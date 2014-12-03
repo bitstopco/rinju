@@ -2,7 +2,12 @@ var fs = require('fs');
 var needle = require('needle');
 var nconf = require('nconf');
 var Camelittle = require('camelittle');
-var clInstance = new Camelittle({});
+var clInstance = new Camelittle({
+    device: '/dev/video0',
+    resolution: '1920x1080',
+    frames: 5,
+    'no-banner': null
+});
 var Canvas = require('canvas'), Image = Canvas.Image, qrcode = require('jsqrcode')(Canvas);
 
 nconf.argv().env();
