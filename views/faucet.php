@@ -61,5 +61,7 @@
 
     })();
   </script>
+
+  <?php echo $_ENV['note']; ?>
 </body>
 </html>
