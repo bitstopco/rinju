@@ -2,6 +2,8 @@
 <html>
   <head>
     <title>rinju</title>
+
+    <script src="assets/js/jquery-2.1.1.min.js"></script>
   </head>
   <body>
 
@@ -36,6 +38,15 @@
             console.log('Same address');
           } else {
             console.log('New address');
+
+            $.ajax({
+              url: 'http://localhost:8080/transaction?address='+address,
+              type: "GET",
+              success: function (data) {
+                console.log(data);
+              }
+            });
+            
           }
 
           localStorage.setItem("lastAddress", address);
@@ -62,6 +73,5 @@
     })();
   </script>
 
-  <?php echo $_ENV['note']; ?>
 </body>
 </html>
